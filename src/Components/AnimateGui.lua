@@ -32,13 +32,10 @@ function Animation.Apply(theme, root)
 				while active and obj.Parent do
 					task.wait(0.03)
 					if obj then
-						obj.Rotation = (obj.Rotation + rotationSpeed) % 360
-
-		       			if obj.OffsetStudsScale then
-				         	local offsetX = 0.5 + 0.5 * math.sin(math.rad(obj.Rotation))
-					        local offsetY = 0.5 + 0.5 * math.cos(math.rad(obj.Rotation))
-				        	obj.OffsetStudsScale = Vector2.new(offsetX, offsetY)
-						end
+						t += rotationSpeed / 100
+					
+					    obj.Offset = Vector2.new((math.sin(t) + 1) / 2, (math.cos(t) + 1) / 2)
+					    obj.Rotation = (obj.Rotation + rotationSpeed) % 360
 					end
 				end
 			end)
