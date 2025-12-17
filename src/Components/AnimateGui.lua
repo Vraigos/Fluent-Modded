@@ -31,9 +31,7 @@ function Animation.Apply(theme, root)
 				obj.Rotation = (t * rotateSpeed) % 360
 				obj.Color = ColorSequence.new{
 					ColorSequenceKeypoint.new(0, dark),
-					ColorSequenceKeypoint.new(0.25, shine),
-					ColorSequenceKeypoint.new(0.5, dark),
-					ColorSequenceKeypoint.new(0.75, shine),
+					ColorSequenceKeypoint.new(1, shine),
 					ColorSequenceKeypoint.new(1, dark)
 				}
 			end)
