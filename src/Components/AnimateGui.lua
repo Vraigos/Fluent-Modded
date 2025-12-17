@@ -1,10 +1,11 @@
-local RunService = game:GetService("RunService")
 local Animation = {}
 local connections = {}
 
 local function clear()
 	for _, c in ipairs(connections) do
-		pcall(function() c:Disconnect() end)
+		if c and c.disconnect then
+			c.disconnect()
+		end
 	end
 	table.clear(connections)
 end
@@ -16,37 +17,47 @@ function Animation.Apply(theme, root)
 		return
 	end
 
-	local speed = theme.ShineSpeed or 0.6
-	local rotateSpeed = theme.RotationSpeed or 40 
-	local dark  = theme.ShineDark or Color3.fromRGB(8,8,8)
-	local shine = theme.ShineColor or theme.Accent or Color3.fromRGB(120,200,255)
+	local rotationSpeed = theme.RotationSpeed * 0.1 or 1
+	local pulseSpeed = theme.ShineSpeed or 0.05
+	local dark = theme.StrokeDark or Color3.fromRGB(15, 15, 15)
+	local shine = theme.ShineColor or theme.Accent or Color3.fromRGB(120, 200, 255)
 
 	for _, obj in ipairs(root:GetDescendants()) do
 		if obj:IsA("UIGradient") then
-			local t = 0
-			local conn
-			conn = RunService.RenderStepped:Connect(function(dt)
-				t += dt * speed
-				obj.Offset = Vector2.new(math.sin(t) * 0.5, 0)
-				obj.Rotation = (t * rotateSpeed) % 360
-				obj.Color = ColorSequence.new{
-					ColorSequenceKeypoint.new(0, dark),
-					ColorSequenceKeypoint.new(0.5, shine),
-					ColorSequenceKeypoint.new(1, dark)
-				}
+			obj.Rotation = 0
+			local active = true
+
+			task.spawn(function()
+				while active do
+					task.wait(0.03)
+					obj.Rotation = (obj.Rotation + rotationSpeed) % 360
+				end
 			end)
-			table.insert(connections, conn)
+
+			table.insert(connections, {
+				disconnect = function()
+					active = false
+				end
+			})
 		end
 
 		if obj:IsA("UIStroke") and theme.StrokeShine then
-			local from = theme.StrokeDark or theme.AcrylicBorder or dark
+			local active = true
 			local t = 0
-			local conn
-			conn = RunService.RenderStepped:Connect(function(dt)
-				t += dt * speed
-				obj.Color = from:Lerp(shine, (math.sin(t) + 1) / 2)
+
+			task.spawn(function()
+				while active do
+					task.wait(pulseSpeed)
+					t += pulseSpeed
+					obj.Color = dark:Lerp(shine, (math.sin(t) + 1) / 2)
+				end
 			end)
-			table.insert(connections, conn)
+
+			table.insert(connections, {
+				disconnect = function()
+					active = false
+				end
+			})
 		end
 	end
 end
