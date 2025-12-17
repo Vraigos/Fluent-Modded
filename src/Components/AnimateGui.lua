@@ -3,7 +3,7 @@ local connections = {}
 
 local function clear()
 	for _, c in ipairs(connections) do
-		if c and c.disconnect then
+		if c.disconnect then
 			c.disconnect()
 		end
 	end
@@ -27,10 +27,13 @@ function Animation.Apply(theme, root)
 			obj.Rotation = 0
 			local active = true
 
-			task.spawn(function()
-				while active do
+			local rotationThread
+			rotationThread = task.spawn(function()
+				while active and obj.Parent do
 					task.wait(0.03)
-					obj.Rotation = (obj.Rotation + rotationSpeed) % 360
+					if obj then
+						obj.Rotation = (obj.Rotation + rotationSpeed) % 360
+					end
 				end
 			end)
 
@@ -45,11 +48,14 @@ function Animation.Apply(theme, root)
 			local active = true
 			local t = 0
 
-			task.spawn(function()
-				while active do
+			local pulseThread
+			pulseThread = task.spawn(function()
+				while active and obj.Parent do
 					task.wait(pulseSpeed)
 					t += pulseSpeed
-					obj.Color = dark:Lerp(shine, (math.sin(t) + 1) / 2)
+					if obj then
+						obj.Color = dark:Lerp(shine, (math.sin(t) + 1) / 2)
+					end
 				end
 			end)
 
