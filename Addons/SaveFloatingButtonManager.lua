@@ -34,9 +34,10 @@ end
 
 FloatingButtonManager:BuildFolderTree()
 
-function FloatingButtonManager:AddButton(id, frame, locked)
+function FloatingButtonManager:AddButton(id, frame, locked, isCircle)
     self.Buttons[id] = frame
     frame:SetAttribute("Locked", locked or false)
+    frame:SetAttribute("IsCircle", isCircle or false)
 end
 
 function FloatingButtonManager:Save(name)
@@ -46,7 +47,8 @@ function FloatingButtonManager:Save(name)
         data[id] = {
             size = serializeUDim2(frame.Size),
             position = serializeUDim2(frame.Position),
-            locked = frame:GetAttribute("Locked") or false
+            locked = frame:GetAttribute("Locked") or false,
+            isCircle = frame:GetAttribute("IsCircle") or false
         }
     end
     local success, encoded = pcall(httpService.JSONEncode, httpService, data)
@@ -66,6 +68,19 @@ function FloatingButtonManager:Load(name)
             frame.Size = deserializeUDim2(saved.size)
             frame.Position = deserializeUDim2(saved.position)
             frame:SetAttribute("Locked", saved.locked or false)
+            frame:SetAttribute("IsCircle", saved.isCircle or false)
+            
+            local corner = frame:FindFirstChildWhichIsA("UICorner")
+            local button = frame:FindFirstChildWhichIsA("TextButton")
+            if saved.isCircle then
+                local s = math.min(frame.AbsoluteSize.X, frame.AbsoluteSize.Y)
+                frame.Size = UDim2.new(0, s, 0, s)
+                if corner then corner.CornerRadius = UDim.new(1,0) end
+                if button then button.TextSize = math.floor(s * 0.45) end
+            else
+                if corner then corner.CornerRadius = UDim.new(0,15) end
+                if button then button.TextSize = 24 end
+            end
         end
     end
     return true
