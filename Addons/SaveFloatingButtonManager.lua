@@ -43,6 +43,7 @@ end
 function FloatingButtonManager:Save(name)
     local path = self.Folder .. "/settings/" .. name .. ".json"
     local data = {}
+
     for id, frame in pairs(self.Buttons) do
         data[id] = {
             size = serializeUDim2(frame.Size),
@@ -51,6 +52,7 @@ function FloatingButtonManager:Save(name)
             isCircle = frame:GetAttribute("IsCircle") or false
         }
     end
+
     local success, encoded = pcall(httpService.JSONEncode, httpService, data)
     if not success then return false, "encode failed" end
     writefile(path, encoded)
@@ -60,29 +62,37 @@ end
 function FloatingButtonManager:Load(name)
     local path = self.Folder .. "/settings/" .. name .. ".json"
     if not isfile(path) then return false, "no such file" end
+
     local success, decoded = pcall(httpService.JSONDecode, httpService, readfile(path))
     if not success then return false, "decode failed" end
+
     for id, saved in pairs(decoded) do
         local frame = self.Buttons[id]
         if frame then
             frame.Size = deserializeUDim2(saved.size)
             frame.Position = deserializeUDim2(saved.position)
+
             frame:SetAttribute("Locked", saved.locked or false)
             frame:SetAttribute("IsCircle", saved.isCircle or false)
-            
+
             local corner = frame:FindFirstChildWhichIsA("UICorner")
             local button = frame:FindFirstChildWhichIsA("TextButton")
+
             if saved.isCircle then
-                local s = math.min(frame.AbsoluteSize.X, frame.AbsoluteSize.Y)
-                frame.Size = UDim2.new(0, s, 0, s)
-                if corner then corner.CornerRadius = UDim.new(1,0) end
-                if button then button.TextSize = math.floor(s * 0.45) end
+                if corner then corner.CornerRadius = UDim.new(1, 0) end
+                if button then
+                    local s = math.min(frame.AbsoluteSize.X, frame.AbsoluteSize.Y)
+                    button.TextSize = math.floor(s * 0.45)
+                end
             else
-                if corner then corner.CornerRadius = UDim.new(0,15) end
-                if button then button.TextSize = 24 end
+                if corner then corner.CornerRadius = UDim.new(0, 15) end
+                if button then
+                    button.TextSize = 24 
+                end
             end
         end
     end
+
     return true
 end
 
