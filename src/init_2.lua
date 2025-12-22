@@ -1,2 +1,2 @@
 
-nil
+return "image"
