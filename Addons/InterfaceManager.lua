@@ -3,7 +3,7 @@ local httpService = game:GetService("HttpService")
 local InterfaceManager = {} do
 	InterfaceManager.Folder = "FluentSettings"
     InterfaceManager.Settings = {
-        Theme = "Crimson",
+        Theme = "Azure",
         Acrylic = true,
         Transparency = true,
         MenuKeybind = "LeftControl"
@@ -99,6 +99,15 @@ local InterfaceManager = {} do
 				Library:ToggleTransparency(Value)
 				Settings.Transparency = Value
                 InterfaceManager:SaveSettings()
+			end
+		})
+
+		section:AddToggle("DisableUIAnimationToggle", {
+			Title = "Disable UI Animations",
+			Description = "Makes the interface transparent.",
+			Default = Settings.Transparency,
+			Callback = function(Value)
+				getgenv().ShineEnabled = Value
 			end
 		})
 	
