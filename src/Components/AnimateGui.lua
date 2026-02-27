@@ -2,7 +2,7 @@ local RunService = game:GetService("RunService")
 local Animation = {}
 local connections = {}
 
-local function clear()
+local function ClearAllAnimations()
 	for _, c in ipairs(connections) do
 		pcall(function() c:Disconnect() end)
 	end
@@ -10,35 +10,31 @@ local function clear()
 end
 
 function Animation.Apply(theme, root)
-	clear()
+	ClearAllAnimations()
 
-	if not theme or not root or not theme.ShineEnabled then
+	if not theme or not root or not theme.ShineEnabled or not theme.Shine then
 		return
 	end
 
-	local speed = theme.ShineSpeed or 0.6
-	local rotateSpeed = theme.RotationSpeed or 40 
-	local dark  = theme.ShineDark or Color3.fromRGB(8,8,8)
-	local shine = theme.ShineColor or theme.Accent or Color3.fromRGB(120,200,255)
-
+	local ShineConfig = theme.Shine
+	local Speed = ShineConfig.Speed or 0.5
+	local RotationSpeed = ShineConfig.RotationSpeed or 25
+	local ColorSequence = ShineConfig.ColorSequence
+	
 	for _, obj in ipairs(root:GetDescendants()) do
 		if obj:IsA("UIGradient") then
 			local t = 0
 			local conn
 			conn = RunService.RenderStepped:Connect(function(dt)
 				local t = obj:GetAttribute("old_t") or 0
-				t += dt * speed
+				t += dt * Speed
                 obj:SetAttribute("old_t", t)
 				
                 -- local r = tick() * (theme.RotationSpeed * 0.1 or 0.4)
                 -- obj.Offset = Vector2.new(0.5 + math.sin(r) * 0.5, 0.5 + math.cos(r) * 0.5)
 					
-				obj.Rotation = (t * rotateSpeed) % 360
-				obj.Color = ColorSequence.new{
-					ColorSequenceKeypoint.new(0, dark),
-					ColorSequenceKeypoint.new(0.6, shine),
-					ColorSequenceKeypoint.new(1, dark)
-				}
+				obj.Rotation = (t * RotationSpeed) % 360
+				obj.Color = ColorSequence
 			end)
 			table.insert(connections, conn)
 		end
@@ -49,7 +45,7 @@ function Animation.Apply(theme, root)
 			local conn
 			conn = RunService.RenderStepped:Connect(function(dt)
 				local t = obj:GetAttribute("old_t") or 0
-				t += dt * speed
+				t += dt * Speed
 				obj:SetAttribute("old_t", t)
 			
 				obj.Color = from:Lerp(shine, (math.sin(t) + 1) / 2)
