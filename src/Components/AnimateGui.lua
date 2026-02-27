@@ -12,7 +12,7 @@ end
 function Animation.Apply(theme, root)
 	ClearAllAnimations()
 
-	if not theme or not root or not theme.ShineEnabled or not theme.Shine then
+	if not theme or not root or not _G.ShineEnabled or not theme.ShineEnabled or not theme.Shine then
 		return
 	end
 
