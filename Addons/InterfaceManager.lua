@@ -103,6 +103,7 @@ local InterfaceManager = {} do
 			end
 		})
 
+		getgenv().ShineEnabled = true -- fix
 		section:AddToggle("AnimationToggle", {
 			Title = "Animated Theme",
 			Description = "Makes the theme animated.",
