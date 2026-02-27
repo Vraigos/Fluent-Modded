@@ -1,6 +1,7 @@
 local RunService = game:GetService("RunService")
 local Animation = {}
 local connections = {}
+getgenv().ShineEnabled = true
 
 local function ClearAllAnimations()
 	for _, c in ipairs(connections) do
