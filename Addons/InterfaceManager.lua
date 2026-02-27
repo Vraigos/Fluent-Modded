@@ -103,9 +103,9 @@ local InterfaceManager = {} do
 			end
 		})
 
-		section:AddToggle("DisableUIAnimationToggle", {
-			Title = "Disable UI Animations",
-			Description = "Makes the interface transparent.",
+		section:AddToggle("AnimationToggle", {
+			Title = "Animated Theme",
+			Description = "Makes the theme animated.",
 			Default = Settings.Animated,
 			Callback = function(Value)
 				getgenv().ShineEnabled = Value
