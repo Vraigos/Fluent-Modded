@@ -41,7 +41,7 @@ function Animation.Apply(theme, root)
 		end
 
 		if obj:IsA("UIStroke") and theme.StrokeShine then
-			local from = theme.StrokeDark or theme.AcrylicBorder or dark
+			local from = theme.StrokeDark or theme.AcrylicBorder
 			local t = 0
 			local conn
 			conn = RunService.RenderStepped:Connect(function(dt)
