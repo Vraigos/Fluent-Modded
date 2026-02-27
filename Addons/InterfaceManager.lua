@@ -6,6 +6,7 @@ local InterfaceManager = {} do
         Theme = "Azure",
         Acrylic = true,
         Transparency = true,
+		Animated = true,
         MenuKeybind = "LeftControl"
     }
 
@@ -105,7 +106,7 @@ local InterfaceManager = {} do
 		section:AddToggle("DisableUIAnimationToggle", {
 			Title = "Disable UI Animations",
 			Description = "Makes the interface transparent.",
-			Default = Settings.Transparency,
+			Default = Settings.Animated,
 			Callback = function(Value)
 				getgenv().ShineEnabled = Value
 			end
