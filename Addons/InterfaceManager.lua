@@ -109,7 +109,7 @@ local InterfaceManager = {} do
 			Description = "Makes the theme animated.",
 			Default = Settings.Animated,
 			Callback = function(Value)
-				getgenv().ShineEnabled = Value
+				_G.ShineEnabled = Value
 			end
 		})
 	
